@@ -1,0 +1,24 @@
+# Ignore contents of frames folder, but keep the folder
+frames/*
+!frames/.gitkeep
+
+# Ignore the output GIF
+biodiversity_ca.gif
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# VSCode settings (optional)
+.vscode/
