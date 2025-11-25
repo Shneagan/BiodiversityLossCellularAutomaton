@@ -4,6 +4,7 @@ frames/*
 
 # Ignore the output GIF
 biodiversity_ca.gif
+biodiversity_ca.mp4
 
 # Python cache
 __pycache__/

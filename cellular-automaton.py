@@ -212,13 +212,22 @@ images = []
 for frame in range(NUM_FRAMES):
     filename = os.path.join(OUTPUT_DIR, f"frame_{frame:04d}.png")
     images.append(imageio.imread(filename))
-imageio.mimsave('biodiversity_ca.gif', images, fps=10)
+final_frame = images[-1]
+for _ in range(20):
+    images.append(final_frame)
+imageio.mimsave('biodiversity_ca.gif', images, fps=10, loop=0)
 
+imageio.mimsave(
+    'biodiversity_ca.mp4',
+    images,
+    fps=10,
+    codec='libx264',
+    quality=8
+)
 
 # ------------------------------------------------
 # 8. OPTIONAL ENHANCEMENTS (FOR LATER)
 # ------------------------------------------------
-# - Import a world map mask to simulate only land cells
 # - Add noise textures to simulation for more organic behavior
 # - Add borders or gridlines for a more stylized appearance
 # - Export per-step statistics (average decline, collapse ratio, etc.)
