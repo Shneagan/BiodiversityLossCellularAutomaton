@@ -31,7 +31,7 @@ EMOJI_MAP = {
 
 
 # List defining pressure values at which a cell transitions
-THRESHOLDS = [0.5, 1.0, 2.0, 3.0]
+THRESHOLDS = [0.4, 0.9, 1.8, 3.2]
 
 START_TEMP = 1.0 
 END_TEMP = 4.0 
@@ -40,7 +40,7 @@ END_YEAR = 2100
 
 # Takes an RGB pixel and classifies it into an ecosystem state
 def classify_pixel(pixel):
-    r, g, b = pixel
+    r, g, b = map(int, pixel)
     
     # Detect neutral gray (ocean)
     if abs(r - g) < 8 and abs(r - b) < 8 and abs(g - b) < 8:
@@ -87,7 +87,7 @@ def init_pressures_from_states(states):
             if s <= 0:
                 p[y, x] = 0.0
             else:
-                p[y, x] = THRESHOLDS[s - 1] * 0.3
+                p[y, x] = THRESHOLDS[s - 1] * 0.1
     return p
 
 emojiStates = convert_image_to_states()
@@ -109,8 +109,8 @@ def get_year(frame):
 
 def temp_to_pressure(T):
     # tune these values as needed
-    min_rate = 0.00005
-    max_rate = 0.001
+    min_rate = 0.00006
+    max_rate = 0.00035
     return min_rate + (max_rate - min_rate) * ((T - START_TEMP) / (END_TEMP - START_TEMP))
 
 def step(current_temp):
@@ -133,23 +133,19 @@ def step(current_temp):
                 ny, nx = y + dy, x + dx
                 if 0 <= ny < GRID_HEIGHT and 0 <= nx < GRID_WIDTH:
                     if emojiStates[ny, nx] >= 2:
-                        new_pressures[y, x] += 0.01
-
+                        new_pressures[y, x] += 0.005
             # Random disturbances
             if random.random() < 0.0002:
                 new_pressures[y, x] += random.uniform(0.2, 0.5)
 
             # Threshold transitions
-            for threshold in THRESHOLDS:
-                if new_pressures[y, x] >= threshold:
-                    new_states[y, x] = min(new_states[y, x] + 1, 4)
+            for level, threshold in enumerate(THRESHOLDS):
+                if new_pressures[y, x] >= threshold and new_states[y, x] == level:
+                    new_states[y, x] = level + 1
 
     # Update global states
     emojiStates[:, :] = new_states
     pressures[:, :] = new_pressures
-
-
-
 
 
 # ------------------------------------------------
